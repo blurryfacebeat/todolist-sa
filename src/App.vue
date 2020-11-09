@@ -1,21 +1,17 @@
 <template>
   <div class="container">
     <h1>To-Do-List</h1>
-    <app-lists></app-lists>
+    <app-header />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Lists from './Lists';
+import Header from './Header';
 
 export default {
-  data () {
-    return {
-
-    }
-  },
   components: {
-    appLists: Lists
+    appHeader: Header
   }
 }
 </script>

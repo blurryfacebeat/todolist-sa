@@ -15,7 +15,7 @@
                 </li>
             </ul>
             <form>
-                <input type="text" v-model="listTitle">
+                <input type="text" v-model="listTitle" placeholder="Введите название списка">
                 <button type="submit" @click.prevent="createList">Создать список</button>
             </form>
         </div>
@@ -34,7 +34,7 @@
                 </li>
             </ul>
             <form>
-                <input type="text" v-model="planTitle">
+                <input type="text" v-model="planTitle" placeholder="Введите название дела">
                 <button type="submit" @click.prevent="createPlan(listId)">Добавить дело</button>
             </form>
         </div>
@@ -44,6 +44,12 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
+
+let config = {
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+}
 
 export default {
     data() {
@@ -61,13 +67,13 @@ export default {
         },
         refreshList() {
             axios
-                .get('https://sa-mysite-anchousi.herokuapp.com/api/GetLists')
+                .get('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/get', config)
                 .then(response => (this.todoLists = response.data));
         },
         // Удаляю список
         deleteList(list_id) {
             axios
-                .delete('https://sa-mysite-anchousi.herokuapp.com/api/DeleteList/' + list_id)
+                .delete('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/delete/' + list_id, config)
                 .then(response => {
                     console.log(response);
                     this.refreshList();
@@ -80,7 +86,7 @@ export default {
             alert('Сначала введите название списка');
         }
         axios
-            .post('https://sa-mysite-anchousi.herokuapp.com/api/CreateList', {title: listTitle})
+            .post('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/create', {title: listTitle}, config)
             .then(response => {
                 console.log(response);
                 this.listTitle = '';
@@ -90,8 +96,11 @@ export default {
         getPlans(list_id) {
             this.listId = list_id;
             axios
-                .get('https://sa-mysite-anchousi.herokuapp.com/api/GetPlans/' + list_id)
-                .then(response => (this.cases = response.data));
+                .get('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/get/' + list_id, config)
+                .then(response => {
+                    console.log(response);
+                    this.cases = response.data;
+                });
         },
         createPlan(list_id) {
             const planTitle = this.planTitle;
@@ -99,7 +108,7 @@ export default {
                 alert('Сначала введите название плана');
             }
             axios
-                .post('https://sa-mysite-anchousi.herokuapp.com/api/CreatePlan/' + list_id, {title: planTitle, description: '', priority: 1})
+                .post('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/create/' + list_id, {title: planTitle, description: '', priority: 1}, config)
                 .then(response => {
                     console.log(response);
                     this.planTitle = '';
@@ -114,8 +123,8 @@ export default {
     },
     mounted() {
         axios
-        .get('https://sa-mysite-anchousi.herokuapp.com/api/GetLists')
-        .then(response => (this.todoLists = response.data));
+            .get('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/get', config)
+            .then(response => (this.todoLists = response.data));
     }
 }
 </script>
@@ -208,8 +217,8 @@ export default {
                 justify-content: center;
 
                 input {
-                    padding-right: 1rem;
-                    padding-left: 1rem;
+                    padding-right: 2rem;
+                    padding-left: 2rem;
                     width: 70%;
                     height: 4rem;
 
@@ -219,6 +228,10 @@ export default {
                     outline: none;
                     border: 0.1rem solid #289eff;
                     border-radius: 0.5rem 0 0 0.5rem;
+
+                    &::placeholder {
+                        font-family: inherit;
+                    }
                 }
 
                 button {
@@ -305,8 +318,8 @@ export default {
             justify-content: center;
 
             input {
-                padding-right: 1rem;
-                padding-left: 1rem;
+                padding-right: 2rem;
+                padding-left: 2rem;
                 width: 70%;
                 height: 4rem;
 
@@ -316,6 +329,10 @@ export default {
                 outline: none;
                 border: 0.1rem solid #289eff;
                 border-radius: 0.5rem 0 0 0.5rem;
+
+                &::placeholder {
+                    font-family: inherit;
+                }
             }
 
             button {
