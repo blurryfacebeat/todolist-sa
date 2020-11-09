@@ -2,7 +2,6 @@
     <div>
         <!-- <app-lists /> -->
         <!-- <router-view></router-view> -->
-        <!--  -->
         <List />
         <Cases />
     </div>

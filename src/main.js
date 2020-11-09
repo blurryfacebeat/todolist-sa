@@ -6,6 +6,8 @@ import store from './store/index';
 
 Vue.use(VueRouter);
 
+export const eventEmitter = new Vue();
+
 new Vue({
   el: '#app',
   store,

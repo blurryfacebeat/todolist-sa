@@ -4,15 +4,14 @@
         <ul>
             <ListItem
                 v-for="list of lists"
-                :lists="lists"
                 :list="list"
                 :key="list.id"
                 @remove-list="removeList"
             />
         </ul>
-        <form>
+        <form @submit.prevent="createList">
             <input type="text" v-model="listTitle" placeholder="Введите название списка">
-            <button type="submit" @click.prevent="createList">Создать список</button>
+            <button type="submit">Создать список</button>
         </form>
     </div>
 </template>
@@ -25,7 +24,7 @@ let config = {
     headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
     }
-}
+};
 
 export default {
     data() {

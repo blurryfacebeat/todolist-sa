@@ -4,6 +4,7 @@ import Login from './Login.vue';
 import Profile from './Profile.vue';
 import TodoList from './TodoList.vue';
 import Home from './Home.vue';
+import Cases from './Cases.vue';
 
 export default new VueRouter ({
     routes: [
@@ -22,6 +23,10 @@ export default new VueRouter ({
         {
             path: '/todolist',
             component: TodoList
+        },
+        {
+            path: '/cases',
+            component: Cases
         },
         {
             path: '/home',

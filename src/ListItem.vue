@@ -1,31 +1,33 @@
 <template>
-    <li>
+    <li @click="plansGet(list.id)">
         <span>
-            <router-link :to="'/cases/' + list.id">
-                <a>Список «{{ list.title }}»</a>
-                <span>{{ list.date_create | moment }}</span>
-                <span v-if="list.undone">Не выполнено {{ list.undone }}</span>
-            </router-link>
-            <button @click="$emit('remove-list', list.id)">x</button>
+            <a>Список «{{ list.title }}»</a>
+            <span>{{ list.date_create | moment }}</span>
+            <span v-if="list.undone">Не выполнено {{ list.undone }}</span>
+            <button class="delete" @click="$emit('remove-list', list.id)">x</button>
         </span>
     </li>
 </template>
 
 <script>
 import moment from 'moment';
+import { eventEmitter } from './main';
 
 export default {
     props: ['list'],
     methods: {
         moment() {
             return moment();
+        },
+        plansGet(list_id) {
+            eventEmitter.$emit('getPlans', list_id);
         }
     },
     filters: {
         moment(date) {
             return moment(date).format('DD.MM.YYYY hh:mm');
         }
-    },
+    }
 }
 </script>
 
@@ -47,26 +49,28 @@ export default {
 
         background-color: rgb(40, 158, 255);
         border-radius: 1rem;
+        cursor: pointer;
 
         &:last-child {
             margin-bottom: 0;
+        }
+
+        span {
+            display: inline-block;
+            margin-left: 1rem;
+
+            font-size: 1.2rem;
         }
 
         a {
             width: 100%;
 
             color: #fff;
+            font-size: 1.6rem;
             text-decoration: none;
-
-            span {
-                display: inline-block;
-                margin-left: 1rem;
-
-                font-size: 1.2rem;
-            }
         }
 
-        button {
+        button.delete {
             position: absolute;
             top: .3rem;
             right: 1rem;
