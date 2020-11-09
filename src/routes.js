@@ -3,6 +3,7 @@ import Register from './Register.vue';
 import Login from './Login.vue';
 import Profile from './Profile.vue';
 import TodoList from './TodoList.vue';
+import Home from './Home.vue';
 
 export default new VueRouter ({
     routes: [
@@ -21,7 +22,16 @@ export default new VueRouter ({
         {
             path: '/todolist',
             component: TodoList
+        },
+        {
+            path: '/home',
+            component: Home
+        },
+        {
+            path: '/',
+            redirect: '/home'
         }
+        
     ],
     mode: 'history'
 });

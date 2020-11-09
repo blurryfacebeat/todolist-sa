@@ -8,9 +8,9 @@
                     v-for="list of todoLists"
                     :key="list.id"
                 >
-                    <router-link exact :to="'/cases/' + list.id">
+                    <router-link :to="'/cases/' + list.id">
                         <a class="list-link" @click="getPlans(list.id)">Список «{{ list.title }}» <span>{{ list.date_create | moment }}</span></a>
-                    </router-link>
+                    </router-link> 
                     <button @click.prevent="deleteList(list.id)">x</button>
                 </li>
             </ul>
@@ -21,7 +21,7 @@
         </div>
         <div class="plans-container">
             <h2>Дела</h2>
-            <router-link exact :to="'/'">
+            <router-link exact to="/todolist">
                 <button class="close-plans">x</button>
             </router-link>
             <ul class="plans">

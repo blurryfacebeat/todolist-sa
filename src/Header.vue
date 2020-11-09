@@ -2,6 +2,9 @@
     <div>
         <nav>
             <ul>
+                <li>
+                    <router-link to="/home"><span>Главная</span></router-link>
+                </li>
                 <li v-if="tokenTemp">
                     <router-link to="/register"><span>Зарегистрироваться</span></router-link>
                 </li>
