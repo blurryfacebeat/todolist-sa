@@ -1,17 +1,24 @@
 <template>
     <div>
         <h2>Дела</h2>
-        <h4 v-if="cases.length === 0">Список дел пуст</h4>
+        <h4 v-if="list_id === null">Вы еще не выбрали список дел</h4>
+        <h4 v-if="cases.length === 0 && list_id !== null">Список дел пуст</h4>
         <ul>
             <CaseItem 
                 v-for="cs of cases"
                 :cs="cs"
                 :key="cs.id"
+                @remove-plan="removePlan"
+                @plan-done="planDone"
             />
         </ul>
-        <form @submit.prevent="createPlan(list_id)">
+        <form v-if="list_id !== null" @submit.prevent="createPlan(list_id)">
             <input type="text" v-model="planTitle" placeholder="Введите название дела">
             <button type="submit">Добавить дело</button>
+            <span class="urgently">
+                <input type="checkbox" v-model="urgently">
+                <span>Срочно</span>
+            </span>
         </form>
     </div>
 </template>
@@ -32,7 +39,8 @@ export default {
         return {
             planTitle: '',
             cases: [],
-            list_id: null
+            list_id: null,
+            urgently: false
         }
     },
     components: {
@@ -40,14 +48,19 @@ export default {
     },
     methods: {
         createPlan(list_id) {
+            let priority = 1;
+            if (this.urgently) {
+                priority = 5;
+            }
             const planTitle = this.planTitle;
             if (this.planTitle.trim()) {
                 axios
-                    .post('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/create/' + list_id, {title: planTitle, description: '', priority: 1}, config)
+                    .post('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/create/' + list_id, {title: planTitle, description: '', priority}, config)
                     .then(response => {
                         console.log(response);
                         this.planTitle = '';
                         this.cases.push(response.data);
+                        alert('Дело успешно добавлено');
                     });
             } else {
                 alert('Сначала введите название дела');
@@ -60,10 +73,33 @@ export default {
                     console.log(response);
                     this.cases = response.data;
                 });
+        },
+        removePlan(plan_id) {
+            const sure = confirm('Вы точно хотите удалить дело?');
+            if (sure) {
+                axios
+                    .delete('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/delete/' + plan_id, config)
+                    .then(response => {
+                        console.log(response);
+                        this.cases = this.cases.filter(c => c.id !== plan_id);
+                        alert('Дело успешно удалено');
+                    });
+            } else {
+                alert('Запрос отменен');
+            }
+
+        },
+        planDone(plan_id, plan_complete) {
+            axios
+                .post('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/plans/change/' + plan_id + '/' + this.list_id, {complete: true}, config)
+                .then(response => {
+                    console.log(response);
+                    this.getPlans(this.list_id);
+                });
         }
     },
     created() {
-        eventEmitter.$on('getPlans', (list_id) => {
+        eventEmitter.$on('getP', (list_id) => {
             this.list_id = list_id;
             this.getPlans(list_id);
         });
@@ -114,7 +150,7 @@ export default {
             input {
                 padding-right: 2rem;
                 padding-left: 2rem;
-                width: 70%;
+                width: 50%;
                 height: 4rem;
 
                 font-family: inherit;
@@ -142,6 +178,23 @@ export default {
                 cursor: pointer;
                 outline: none;
                 background-color: #289eff;
+            }
+
+            .urgently {
+                width: 20%;
+                display: flex;
+                align-items: center;
+                margin-left: 1rem;
+
+                input {
+                    margin-right: 0.5rem;
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                span {
+                    font-size: 1.4rem;
+                }
             }
         }
     }

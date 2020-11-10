@@ -34,9 +34,9 @@ export default new VueRouter ({
         },
         {
             path: '/',
+            path: '*',
             redirect: '/home'
         }
-        
     ],
     mode: 'history'
 });

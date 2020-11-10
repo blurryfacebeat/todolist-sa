@@ -1,22 +1,16 @@
 <template>
     <div>
-        <!-- <app-lists /> -->
-        <!-- <router-view></router-view> -->
         <List />
         <Cases />
     </div>
 </template>
 
 <script>
-// import Lists from './Lists';
-// 
 import List from './List';
 import Cases from './Cases';
 
 export default {
     components: {
-        // appLists: Lists
-        // 
         List,
         Cases
     }

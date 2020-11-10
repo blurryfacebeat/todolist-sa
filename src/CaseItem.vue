@@ -1,8 +1,10 @@
 <template>
-    <li>
-        <span>
-            <span>Дело «{{ cs.title }}»</span>
-            <span>{{ cs.data_create | moment }}</span>
+    <li :class="{urgently: cs.priority !== 1}">
+        <span class="plan-container">
+            <span @click="$emit('plan-done', cs.id, cs.complete)">Дело «{{ cs.title }}»</span>
+            <span>{{ cs.created_at | moment }}</span>
+            <span class="done" v-if="cs.complete"></span>
+            <div class="delete-plan" @click="$emit('remove-plan', cs.id)">x</div>
         </span>
     </li>
 </template>
@@ -11,7 +13,7 @@
 import moment from 'moment';
 
 export default {
-    props: ['cs'],
+    props: ['cs', 'urgently'],
     methods: {
         moment() {
             return moment();
@@ -29,25 +31,65 @@ export default {
     li {
         width: 100%;
         margin-bottom: 1rem;
-        padding-bottom: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
 
         text-align: center;
         font-size: 1.4rem;
 
-        cursor: pointer;
         border-bottom: 0.1rem solid rgba(0, 0, 0, 0.2);
+        border-radius: 0.5rem;
 
         &:last-child {
             margin-bottom: 0;
         }
 
-        span {
-            display: inline-block;
-            margin-left: 1rem;
+        .plan-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            &:first-of-type {
-                margin-left: 0;
+            span {
+                display: inline-block;
+                margin-left: 1rem;
+
+                &:first-of-type {
+                    cursor: pointer;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+
+                &:first-of-type {
+                    margin-left: 0;
+                }
+            }
+
+            .done {
+                width: 2rem;
+                height: 2rem;
+
+                background-image: url('./assets/done.svg');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+            }
+
+            .delete-plan {
+                position: absolute;
+                top: -0.4rem;
+                right: 0.7rem;
+
+                font-weight: 600;
+
+                cursor: pointer;
             }
         }
+    }
+
+    .urgently {
+        background-color: rgb(255, 167, 167);
     }
 </style>

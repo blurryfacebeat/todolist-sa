@@ -5,10 +5,10 @@
                 <li>
                     <router-link to="/home"><span>Главная</span></router-link>
                 </li>
-                <li v-if="tokenTemp">
+                <li v-if="!tokenTemp">
                     <router-link to="/register"><span>Зарегистрироваться</span></router-link>
                 </li>
-                <li v-if="tokenTemp">
+                <li v-if="!tokenTemp">
                     <router-link to="/login"><span>Войти</span></router-link>
                 </li>
                 <li v-if="tokenTemp">

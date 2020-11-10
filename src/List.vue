@@ -1,9 +1,14 @@
 <template>
     <div>
         <h2>Списки дел</h2>
+        <select v-model="listsFilter">
+            <option value="all">Все</option>
+            <option value="complete">Выполненные</option>
+            <option value="not-complete">Невыполненные</option>
+        </select>
         <ul>
             <ListItem
-                v-for="list of lists"
+                v-for="list of filteredLists"
                 :list="list"
                 :key="list.id"
                 @remove-list="removeList"
@@ -30,7 +35,8 @@ export default {
     data() {
         return {
             lists: [],
-            listTitle: ''
+            listTitle: '',
+            listsFilter: 'not-complete'
         }
     },
     mounted() {
@@ -40,6 +46,17 @@ export default {
     },
     components: {
         ListItem
+    },
+    computed: {
+        filteredLists() {
+            if (this.listsFilter === 'all') {
+                return this.lists;
+            } else if (this.listsFilter === 'complete') {
+                return this.lists.filter(l => !l.undone);
+            } else if (this.listsFilter === 'not-complete') {
+                return this.lists.filter(l => l.undone);
+            }
+        }
     },
     methods: {
         createList() {
@@ -51,18 +68,26 @@ export default {
                         console.log(response);
                         this.lists.push(response.data)
                         this.listTitle = '';
+                        alert('Список успешно создан');
                     });
             } else {
                 alert('Сначала введите название списка');
             }
         },
         removeList(list_id) {
-            axios
-                .delete('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/delete/' + list_id, config)
-                .then(response => {
-                    console.log(response);
-                    this.lists = this.lists.filter(l => l.id !== list_id);
-                });
+            const sure = confirm('Вы точно хотите удалить список?');
+            if (sure) {
+                axios
+                    .delete('https://sa-mysite-anchousi.herokuapp.com/api/to_do_list/lists/delete/' + list_id, config)
+                    .then(response => {
+                        console.log(response);
+                        this.lists = this.lists.filter(l => l.id !== list_id);
+                        alert('Список успешно удален');
+                    });
+            } else {
+                alert('Запрос отменен');
+            }
+
         }
     }
 }
@@ -82,6 +107,19 @@ export default {
             color: rgb(68, 68, 68);
             font-weight: 500;
             font-size: 2.4rem;
+        }
+
+        select {
+            margin: 0 auto;
+            margin-bottom: 2rem;
+            width: 30rem;
+            height: 3rem;
+
+            font-family: inherit;
+
+            border: 0.1rem solid rgb(75, 189, 255);
+            border-radius: 0.5rem;
+            outline: none;
         }
 
         ul {

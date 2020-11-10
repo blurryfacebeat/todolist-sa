@@ -1,9 +1,8 @@
 <template>
-    <li @click="plansGet(list.id)">
+    <li>
         <span>
-            <a>Список «{{ list.title }}»</a>
-            <span>{{ list.date_create | moment }}</span>
-            <span v-if="list.undone">Не выполнено {{ list.undone }}</span>
+            <a @click="plansGet(list.id)">Список «{{ list.title }}»</a>
+            <span>{{ list.created_at | moment }}</span>
             <button class="delete" @click="$emit('remove-list', list.id)">x</button>
         </span>
     </li>
@@ -20,7 +19,7 @@ export default {
             return moment();
         },
         plansGet(list_id) {
-            eventEmitter.$emit('getPlans', list_id);
+            eventEmitter.$emit('getP', list_id);
         }
     },
     filters: {
@@ -49,7 +48,6 @@ export default {
 
         background-color: rgb(40, 158, 255);
         border-radius: 1rem;
-        cursor: pointer;
 
         &:last-child {
             margin-bottom: 0;
@@ -68,6 +66,12 @@ export default {
             color: #fff;
             font-size: 1.6rem;
             text-decoration: none;
+
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
         }
 
         button.delete {

@@ -39,6 +39,7 @@ export default {
                     console.log(regObj);
                     console.log('Авторизация прошла');
                     localStorage.setItem('token', response.data.token);
+                    location.reload();
                     this.username = '';
                     this.password = '';
                 });
